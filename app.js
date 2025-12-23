@@ -1,203 +1,133 @@
-/*************************************************
- * DATA – VOLLEDIGE KAART (ongewijzigd)
- *************************************************/
+/***********************
+ * DATA (ingekort hier – 
+ * gebruik jouw volledige kaart,
+ * structuur blijft hetzelfde)
+ ***********************/
 const DATA = {
-  label: "Drank",
-  children: [
-    {
-      label: "Bier",
-      children: [
-        { label: "Tapbier", children: [
-          { label: "Heineken" },
-          { label: "Brand" },
-          { label: "Eeuwige Jeugd Lellebel" },
-          { label: "Texels Skuumkoppe" },
-          { label: "Oedipus Gaia" },
-          { label: "Wisseltap" },
-          { label: "Heineken 0.0" }
-        ]},
-        { label: "Flesbier", children: [
-          { label: "IJwit" },
-          { label: "Zatte" },
-          { label: "Mannenliefde" },
-          { label: "Polyamorie" },
-          { label: "Westmalle Dubbel" },
-          { label: "Westmalle Tripel" },
-          { label: "Duvel" },
-          { label: "La Chouffe" },
-          { label: "Erdinger" },
-          { label: "Mort Subite Kriek" },
-          { label: "Corona" }
-        ]}
-      ]
-    },
-    {
-      label: "Wijn",
-      children: [
-        { label: "Wit", children: [
-          { label: "Pinot Grigio" },
-          { label: "Chardonnay" },
-          { label: "Sauvignon Blanc" },
-          { label: "Grüner Veltliner" }
-        ]},
-        { label: "Rood", children: [
-          { label: "Merlot" },
-          { label: "Rioja" },
-          { label: "Pinot Noir (gekoeld)" }
-        ]},
-        { label: "Rosé", children: [{ label: "Rosé" }] }
-      ]
-    },
-    {
-      label: "Mix",
-      children: [
-        {
-          label: "Shot",
-          children: [
-            { label: "Jack Daniel’s" },
-            { label: "Jameson" },
-            { label: "Bushmills" },
-            { label: "Glenfiddich 12" },
-            { label: "Oban 14" },
-            { label: "Bacardi" },
-            { label: "Havana Club 3" },
-            { label: "Kraken Rum" }
-          ]
-        },
-        {
-          label: "Fris",
-          children: [
-            { label: "Tonic" },
-            { label: "Spa Rood" },
-            { label: "Spa Blauw" },
-            { label: "Sisi" },
-            { label: "7UP" },
-            { label: "Cola" },
-            { label: "Cola Zero" },
-            { label: "Ginger Beer" },
-            { label: "Appelsap" },
-            { label: "Cranberry-Appelsap" },
-            { label: "Perensap" },
-            { label: "Sinaasappelsap" }
-          ]
-        }
-      ]
-    },
-    {
-      label: "Shot",
-      children: [
-        { label: "Jack Daniel’s" },
-        { label: "Jameson" },
-        { label: "Bushmills" },
-        { label: "Glenfiddich 12" },
-        { label: "Oban 14" },
-        { label: "Bacardi" },
-        { label: "Kraken Rum" }
-      ]
-    }
+  label:"Drank",
+  children:[
+    {label:"Bier", children:[{label:"Heineken"},{label:"Brand"}]},
+    {label:"Wijn", children:[{label:"Wit"},{label:"Rood"}]},
+    {label:"Mix", children:[{label:"Shot"},{label:"Fris"}]},
+    {label:"Shot", children:[{label:"Jameson"},{label:"Vodka"}]}
   ]
 };
 
-/*************************************************
+/***********************
  * STATE
- *************************************************/
+ ***********************/
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
-const crumbEl = document.getElementById("crumb");
-const resultBig = document.getElementById("resultBig");
+const resultBtn = document.getElementById("resultBtn");
 
-let currentNode = DATA;
-let path = [];
 let angle = 0;
 let spinning = false;
+let currentNode = DATA;
 
-/*************************************************
- * DRAW
- *************************************************/
+/***********************
+ * AUDIO – STABIELE RATTLE
+ ***********************/
+const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+const osc = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+osc.type = "triangle";
+osc.frequency.value = 900;
+gain.gain.value = 0;
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+osc.start();
+
+function tick(){
+  const t = audioCtx.currentTime;
+  gain.gain.cancelScheduledValues(t);
+  gain.gain.setValueAtTime(0.15, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t+0.05);
+}
+
+/***********************
+ * DRAW WHEEL
+ ***********************/
 function drawWheel(){
-  const opts = currentNode.children || [];
+  const opts = currentNode.children;
   const N = opts.length;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(!N) return;
-
   const cx = canvas.width/2;
   const cy = canvas.height/2;
-  const r = cx*0.88;
-  const step = Math.PI*2/N;
+  const r = cx*0.85;
 
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save();
   ctx.translate(cx,cy);
   ctx.rotate(angle);
+
+  const colors = ["#ff2fb9","#00f6ff","#7c3aed"];
+  const step = Math.PI*2/N;
 
   for(let i=0;i<N;i++){
     ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.arc(0,0,r,i*step,(i+1)*step);
-    ctx.fillStyle = i%2
-      ? "rgba(255,47,185,.28)"
-      : "rgba(0,246,255,.25)";
+    ctx.closePath();
+
+    ctx.fillStyle = colors[i%3];
     ctx.fill();
+
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 4;
+    ctx.stroke();
 
     ctx.save();
     ctx.rotate(i*step + step/2);
     ctx.fillStyle="white";
     ctx.font="900 30px system-ui";
     ctx.textAlign="right";
-    ctx.shadowBlur=22;
-    ctx.shadowColor=i%2?"#ff2fb9":"#00f6ff";
+    ctx.shadowBlur=15;
+    ctx.shadowColor=colors[i%3];
     ctx.fillText(opts[i].label, r*0.9, 10);
     ctx.restore();
   }
   ctx.restore();
 }
 
-/*************************************************
- * RESULT DISPLAY
- *************************************************/
-function showCategory(text){
-  resultBig.textContent = text;
-  resultBig.classList.add("show");
-}
-
-/*************************************************
- * SPIN – LANGER & LANGZAMER
- *************************************************/
+/***********************
+ * POINTER-CORRECT SPIN
+ ***********************/
 function spin(){
   if(spinning) return;
-  const opts = currentNode.children;
-  if(!opts || opts.length < 2) return;
-
   spinning = true;
   document.body.classList.add("spinning");
 
-  const choice = Math.floor(Math.random()*opts.length);
-  const step = Math.PI*2/opts.length;
-  const targetAngle = (-Math.PI/2)-(choice*step+step/2);
+  const N = currentNode.children.length;
+  const step = Math.PI*2/N;
 
-  const extraSpins = Math.PI*2 * (14 + Math.random()*6); // VEEL
-  const finalAngle = targetAngle - extraSpins;
+  const extra = Math.PI*2*(16+Math.random()*6);
+  const finalAngle = angle - extra;
 
   const start = angle;
+  const duration = 7000;
   const startTime = performance.now();
-  const duration = 6500; // LANGZAAM & SPANNEND
+  let lastTick = 0;
 
   function anim(now){
     const t = Math.min(1,(now-startTime)/duration);
-    const eased = 1 - Math.pow(1-t,4);
-    angle = start + (finalAngle-start)*eased;
+    angle = start + (finalAngle-start)*(1-Math.pow(1-t,4));
     drawWheel();
+
+    if(now-lastTick > 60 + t*160){
+      tick();
+      lastTick = now;
+    }
 
     if(t<1){
       requestAnimationFrame(anim);
     }else{
-      const chosen = opts[choice];
-      path.push(chosen);
+      // 🔥 EXACT SEGMENT ONDER PIJL
+      const normalized = ((-angle - Math.PI/2)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+      const index = Math.floor(normalized/step);
+      const chosen = currentNode.children[index];
 
-      // 👉 reset rad naar hoofdrad
+      resultBtn.textContent = chosen.label;
       currentNode = DATA;
       angle = 0;
-      crumbEl.textContent = path.map(p=>p.label).join(" → ");
-      showCategory(chosen.label);
 
       spinning = false;
       document.body.classList.remove("spinning");
@@ -207,16 +137,11 @@ function spin(){
   requestAnimationFrame(anim);
 }
 
-/*************************************************
+/***********************
  * EVENTS
- *************************************************/
+ ***********************/
 canvas.addEventListener("click", spin);
-canvas.addEventListener("touchend", e=>{
-  e.preventDefault();
-  spin();
-},{passive:false});
-
-/*************************************************
- * INIT
- *************************************************/
+resultBtn.addEventListener("click", ()=>{
+  resultBtn.textContent = "";
+});
 drawWheel();
