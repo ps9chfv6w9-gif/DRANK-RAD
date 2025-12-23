@@ -10,22 +10,63 @@
 
 <style>
 :root{
-  --pink:#ff2fb9;
-  --cyan:#00f6ff;
-  --purple:#7c3aed;
-  --bg:#05010b;
+  /* Default “bar” achtergrond */
+  --bg1:#2b1b12;
+  --bg2:#120a06;
+  --paper:#f4efe9;
+
+  /* Wordt dynamisch door JS per categorie gezet */
+  --glow:#c47a2c;   /* fallback amber */
+  --glow2:#f2b705;  /* fallback bier */
+
+  /* Segment kleuren (veel kleuren, duidelijk anders) */
+  --seg1:#c47a2c; /* amber */
+  --seg2:#f2b705; /* bier geel */
+  --seg3:#7a1f1f; /* wijn rood */
+  --seg4:#3f5f3a; /* mos groen */
+  --seg5:#2f3e46; /* oud blauw */
+  --seg6:#4a2e1f; /* warm bruin */
 }
 
 body{
   margin:0;
-  background:
-    radial-gradient(circle at top, #3a261a, #1a0f0a 60%),
-    linear-gradient(180deg, #2b1b12, #120a06);
   font-family: system-ui, -apple-system;
-  color:#f4efe9;
+  color: var(--paper);
   min-height:100vh;
   overflow:hidden;
-  animation: warmPulse 6s ease-in-out infinite;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(196,122,44,.25), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(63,95,58,.18), transparent 55%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+/* ✅ Alleen pulsen tijdens spin (groots) */
+body.spinning{
+  animation: barPulse 1.15s ease-in-out infinite;
+}
+@keyframes barPulse{
+  0%   { filter: brightness(1) contrast(1); }
+  50%  { filter: brightness(1.22) contrast(1.05); }
+  100% { filter: brightness(1) contrast(1); }
+}
+
+/* extra glow overlay tijdens spin */
+body.spinning::before{
+  content:"";
+  position:fixed;
+  inset:-20%;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--glow) 55%, transparent), transparent 58%),
+    radial-gradient(circle at 55% 60%, color-mix(in srgb, var(--glow2) 45%, transparent), transparent 62%);
+  filter: blur(18px);
+  opacity:.95;
+  animation: spinGlowMove 1.15s ease-in-out infinite;
+}
+@keyframes spinGlowMove{
+  0%   { transform: scale(1) translateY(0); }
+  50%  { transform: scale(1.06) translateY(-8px); }
+  100% { transform: scale(1) translateY(0); }
 }
 
 .wrap{
@@ -42,8 +83,10 @@ body{
   width:0;height:0;
   border-left:16px solid transparent;
   border-right:16px solid transparent;
-  border-top:24px solid white;
-  filter:drop-shadow(0 0 10px var(--cyan));
+  border-top:24px solid var(--paper);
+  filter:
+    drop-shadow(0 0 10px color-mix(in srgb, var(--glow) 70%, transparent))
+    drop-shadow(0 0 18px color-mix(in srgb, var(--glow2) 55%, transparent));
   z-index:5;
 }
 
@@ -51,9 +94,13 @@ canvas{
   width:100%;
   border-radius:20px;
   cursor:pointer;
+  background: rgba(0,0,0,.15);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.06) inset;
 }
 
-/* TUSSENRESULTAAT */
+/* TUSSENRESULTAAT (kort tonen) */
 .midResult{
   position:fixed;
   inset:0;
@@ -63,24 +110,23 @@ canvas{
   pointer-events:none;
   z-index:20;
 }
-
 .midResult span{
-  font-size:42px;
-  font-weight:900;
-  text-shadow:
-    0 0 20px var(--cyan),
-    0 0 30px var(--pink);
+  font-size:44px;
+  font-weight:950;
   opacity:0;
-  transform:scale(.8);
-  transition:.3s ease;
+  transform:scale(.85);
+  transition: opacity .25s ease, transform .25s ease;
+  text-shadow:
+    0 0 10px color-mix(in srgb, var(--glow) 70%, transparent),
+    0 0 18px color-mix(in srgb, var(--glow2) 60%, transparent),
+    0 14px 28px rgba(0,0,0,.8);
 }
-
 .midResult.show span{
   opacity:1;
   transform:scale(1);
 }
 
-/* EINDSCHERM = KNOP */
+/* EINDSCHERM = FULLSCREEN KNOP */
 .finalScreen{
   position:fixed;
   inset:0;
@@ -90,34 +136,28 @@ canvas{
   background:rgba(0,0,0,.55);
   z-index:30;
 }
-
 .finalScreen button{
   width:100%;
   height:100%;
   background:none;
   border:none;
-  color:white;
-  font-size:56px;
-  font-weight:900;
+  color:var(--paper);
+  font-size: clamp(48px, 8vw, 92px);
+  font-weight:1000;
   cursor:pointer;
+  text-align:center;
+  padding:28px;
   text-shadow:
-  0 0 8px rgba(196,122,44,.8),
-  0 0 18px rgba(196,122,44,.6),
-  0 12px 25px rgba(0,0,0,.8);
-  animation:float 3s ease-in-out infinite;
+    0 0 14px color-mix(in srgb, var(--glow) 75%, transparent),
+    0 0 26px color-mix(in srgb, var(--glow2) 65%, transparent),
+    0 18px 40px rgba(0,0,0,.85);
+  animation: floatFinal 2.8s ease-in-out infinite;
 }
-
-@keyframes float{
-  50%{ transform:translateY(-14px); }
+@keyframes floatFinal{
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-16px); }
+  100% { transform: translateY(0); }
 }
-
-/* 🔥 Warm kroeg-licht effect */
-@keyframes warmPulse {
-  0%   { filter: brightness(1); }
-  50%  { filter: brightness(1.05); }
-  100% { filter: brightness(1); }
-}
- 
 </style>
 </head>
 
@@ -130,6 +170,7 @@ canvas{
 </div>
 
 <div class="midResult" id="midResult"><span></span></div>
+
 <div class="finalScreen" id="finalScreen">
   <button id="finalBtn"></button>
 </div>
