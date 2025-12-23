@@ -1,1 +1,0 @@
-// sw.js from ChatGPT response
