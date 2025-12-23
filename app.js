@@ -178,26 +178,28 @@ const finalBtn = document.getElementById("finalBtn");
 let currentNode = DATA;
 let angle = 0;
 let spinning = false;
-let rootCategoryLabel = null; // bepaalt glowkleur
+
+let rootCategoryLabel = null; // bepaalt glowkleur (Bier/Wijn/Mix/Shot)
+let mixDraft = null;          // { shot: "...", fris: "..." }
 
 /***********************
  * PER CATEGORIE GLOW (bruine kroeg tinten)
  ***********************/
 const CATEGORY_GLOWS = {
-  "Bier": { glow: "#f2b705", glow2: "#c47a2c" },       // bier/amber
-  "Wijn": { glow: "#7a1f1f", glow2: "#c47a2c" },       // wijn/amber
-  "Mix":  { glow: "#c47a2c", glow2: "#2f3e46" },       // amber/oud blauw
-  "Shot": { glow: "#c47a2c", glow2: "#4a2e1f" }        // whiskey/wood
+  "Bier": { glow: "#f2b705", glow2: "#c47a2c" }, // bier/amber
+  "Wijn": { glow: "#7a1f1f", glow2: "#c47a2c" }, // wijn/amber
+  "Mix":  { glow: "#c47a2c", glow2: "#2f3e46" }, // amber/oud blauw
+  "Shot": { glow: "#c47a2c", glow2: "#4a2e1f" }  // whiskey/wood
 };
 
 function setGlowByRootCategory(label) {
-  const g = CATEGORY_GLOWS[label] || { glow:"#c47a2c", glow2:"#f2b705" };
+  const g = CATEGORY_GLOWS[label] || { glow: "#c47a2c", glow2: "#f2b705" };
   document.documentElement.style.setProperty("--glow", g.glow);
   document.documentElement.style.setProperty("--glow2", g.glow2);
 }
 
 /***********************
- * AUDIO (Safari safe) — “kermis ratel” feeling
+ * AUDIO (Safari safe) — “kermis ratel”
  ***********************/
 let audioCtx, osc, gain;
 
@@ -208,7 +210,6 @@ function initAudio() {
   osc = audioCtx.createOscillator();
   gain = audioCtx.createGain();
 
-  // triangle = minder scherp dan square, “mechanischer”
   osc.type = "triangle";
   osc.frequency.value = 900;
 
@@ -230,10 +231,30 @@ function tick(intensity = 1) {
 }
 
 /***********************
- * DRAW (text visible fix: stroke + fill)
+ * HELPERS (Mix flow)
+ ***********************/
+function findChildByLabel(node, label) {
+  const kids = node?.children || [];
+  return kids.find(k => k.label === label) || null;
+}
+
+function goToMixStep(stepLabel) {
+  const mixNode = findChildByLabel(DATA, "Mix");
+  if (!mixNode) return;
+
+  const stepNode = findChildByLabel(mixNode, stepLabel);
+  if (!stepNode) return;
+
+  currentNode = stepNode;
+  angle = 0;
+  drawWheel();
+}
+
+/***********************
+ * DRAW (text visible: outline + fill)
  ***********************/
 function segmentColors() {
-  // veel verschillende kleuren, duidelijk anders
+  // veel verschillende kleuren, duidelijk anders (bruine kroeg vibe)
   return ["#c47a2c", "#f2b705", "#7a1f1f", "#3f5f3a", "#2f3e46", "#4a2e1f"];
 }
 
@@ -257,7 +278,7 @@ function drawWheel() {
     const start = i * step;
     const end = start + step;
 
-    // segment fill
+    // segment
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, r, start, end);
@@ -265,7 +286,7 @@ function drawWheel() {
     ctx.fillStyle = colors[i % colors.length];
     ctx.fill();
 
-    // black separator
+    // black separators
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 4;
     ctx.stroke();
@@ -280,12 +301,12 @@ function drawWheel() {
     ctx.font = "900 30px system-ui";
     ctx.textAlign = "right";
 
-    // OUTLINE for visibility
+    // outline
     ctx.lineWidth = 7;
     ctx.strokeStyle = "rgba(0,0,0,.85)";
     ctx.strokeText(label, 0, 0);
 
-    // Fill text
+    // fill
     ctx.fillStyle = "#f4efe9";
     ctx.shadowBlur = 0;
     ctx.fillText(label, 0, 0);
@@ -297,7 +318,7 @@ function drawWheel() {
 }
 
 /***********************
- * UI helpers
+ * UI
  ***********************/
 function showMid(text) {
   midText.textContent = text;
@@ -315,18 +336,17 @@ function showFinal(text) {
  ***********************/
 function getIndexUnderPointer(N) {
   const step = (Math.PI * 2) / N;
-  // pointer is at -PI/2
   const normalized = ((-angle - Math.PI / 2) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
   return Math.floor(normalized / step);
 }
 
 /***********************
- * SPIN — big pulse only during spin
+ * SPIN
  ***********************/
 function spin() {
   if (spinning) return;
 
-  initAudio(); // must happen after user gesture; click triggers it
+  initAudio();
   const opts = currentNode.children;
   if (!opts || opts.length < 2) return;
 
@@ -334,15 +354,12 @@ function spin() {
   document.body.classList.add("spinning");
 
   const N = opts.length;
-  const step = (Math.PI * 2) / N;
-
-  // LONG suspense
-  const extraSpins = (Math.PI * 2) * (14 + Math.random() * 6); // 14–20
+  const extraSpins = (Math.PI * 2) * (14 + Math.random() * 6);
   const finalAngle = angle - extraSpins;
 
   const start = angle;
   const startTime = performance.now();
-  const duration = 7200; // long & slow
+  const duration = 7200;
   let lastTick = 0;
 
   function anim(now) {
@@ -352,45 +369,81 @@ function spin() {
     angle = start + (finalAngle - start) * eased;
     drawWheel();
 
-    // carnival tick cadence slows down near end
     if (now - lastTick > 55 + t * 190) {
-      // slightly softer near end
       tick(1 - t * 0.25);
       lastTick = now;
     }
 
     if (t < 1) {
       requestAnimationFrame(anim);
-    } else {
-      // snap to final to avoid tiny drift
-      angle = finalAngle;
-      drawWheel();
-
-      const idx = getIndexUnderPointer(N);
-      const chosen = opts[idx];
-
-      // root category for glow:
-      // if we're at root level, chosen becomes the root category.
-      // otherwise keep the first root category selected.
-      if (currentNode === DATA) {
-        rootCategoryLabel = chosen.label;
-      }
-      setGlowByRootCategory(rootCategoryLabel);
-
-      if (chosen.children && chosen.children.length) {
-        // intermediate step: show briefly, go deeper
-        showMid(chosen.label);
-        currentNode = chosen;
-        angle = 0;
-        drawWheel();
-      } else {
-        // final step: show fullscreen, button resets to start
-        showFinal(chosen.label);
-      }
-
-      document.body.classList.remove("spinning");
-      spinning = false;
+      return;
     }
+
+    // ensure final is consistent with pointer math
+    angle = finalAngle;
+    drawWheel();
+
+    const idx = getIndexUnderPointer(N);
+    const chosen = opts[idx];
+
+    // set root category label when spinning at root
+    if (currentNode === DATA) rootCategoryLabel = chosen.label;
+    setGlowByRootCategory(rootCategoryLabel);
+
+    const isLeaf = !chosen.children || chosen.children.length === 0;
+    const inMixFlow = (rootCategoryLabel === "Mix");
+
+    // --- MIX FLOW ---
+    // A) Root chooses "Mix" -> go to Mix > Shot
+    if (currentNode === DATA && chosen.label === "Mix") {
+      mixDraft = { shot: null, fris: null };
+      showMid("Mix → Shot");
+      goToMixStep("Shot");
+      cleanupSpin();
+      return;
+    }
+
+    // B) In Mix > Shot: choose a leaf shot -> go to Mix > Fris
+    if (inMixFlow && currentNode.label === "Shot" && isLeaf) {
+      mixDraft = mixDraft || { shot: null, fris: null };
+      mixDraft.shot = chosen.label;
+
+      showMid(`${chosen.label} → Fris`);
+      goToMixStep("Fris");
+      cleanupSpin();
+      return;
+    }
+
+    // C) In Mix > Fris: choose a leaf fris -> show final "shot + fris"
+    if (inMixFlow && currentNode.label === "Fris" && isLeaf) {
+      mixDraft = mixDraft || { shot: "Shot", fris: null };
+      mixDraft.fris = chosen.label;
+
+      showFinal(`${mixDraft.shot} + ${mixDraft.fris}`);
+      mixDraft = null;
+
+      cleanupSpin();
+      return;
+    }
+
+    // If for some reason we end up in Mix nodes ("Shot"/"Fris") but chosen has children,
+    // continue deeper normally.
+    // --- NORMAL FLOW ---
+    if (!isLeaf) {
+      showMid(chosen.label);
+      currentNode = chosen;
+      angle = 0;
+      drawWheel();
+    } else {
+      showFinal(chosen.label);
+    }
+
+    cleanupSpin();
+  }
+
+  function cleanupSpin() {
+    document.body.classList.remove("spinning");
+    spinning = false;
   }
 
   requestAnimationFrame(anim);
@@ -403,12 +456,13 @@ canvas.addEventListener("click", spin);
 canvas.addEventListener("touchend", (e) => {
   e.preventDefault();
   spin();
-}, { passive:false });
+}, { passive: false });
 
 finalBtn.addEventListener("click", () => {
   finalScreen.style.display = "none";
   currentNode = DATA;
   rootCategoryLabel = null;
+  mixDraft = null;
   setGlowByRootCategory(null);
   angle = 0;
   drawWheel();
