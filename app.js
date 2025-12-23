@@ -14,7 +14,7 @@ const DATA = {
           children: [
             { label: "Heineken" },
             { label: "Brand" },
-            { label: "Eeuwige Jeugd Lellebel" },
+            { label: "Lellebel" },
             { label: "Texels Skuumkoppe" },
             { label: "Oedipus Gaia" },
             { label: "Wisseltap" },
@@ -33,7 +33,7 @@ const DATA = {
             { label: "Duvel" },
             { label: "La Chouffe" },
             { label: "Erdinger" },
-            { label: "Mort Subite Kriek" },
+            { label: "Kriek" },
             { label: "Corona" }
           ]
         },
@@ -69,7 +69,7 @@ const DATA = {
           children: [
             { label: "Merlot" },
             { label: "Rioja" },
-            { label: "Pinot Noir (gekoeld)" }
+            { label: "Pinot Noir" }
           ]
         },
         { label: "Rosé", children: [{ label: "Rosé" }] },
@@ -122,7 +122,7 @@ const DATA = {
             { label: "Cola Zero" },
             { label: "Ginger Beer" },
             { label: "Appelsap" },
-            { label: "Cranberry Appelsap" },
+            { label: "Cranberrysap" },
             { label: "Perensap" },
             { label: "Sinaasappelsap" }
           ]
@@ -138,24 +138,20 @@ const DATA = {
         { label: "Jameson" },
         { label: "Bushmills" },
         { label: "Glenfiddich 12" },
-        { label: "Oban 14" },
         { label: "Bacardi" },
         { label: "Havana Club 3" },
-        { label: "Kraken Rum" },
+        { label: "Donkere Rum" },
         { label: "Beefeater Gin" },
         { label: "Bobby’s Gin" },
-        { label: "Tanqueray" },
-        { label: "Bombay Sapphire" },
-        { label: "Absolut Vodka" },
+        { label: "Vodka" },
         { label: "Disaronno" },
         { label: "Baileys" },
         { label: "Drambuie" },
         { label: "Sambuca" },
-        { label: "Pikketanussie" },
         { label: "Olmeca Silver" },
-        { label: "Nuestra Soledad Mezcal" },
+        { label: "Mezcal" },
         { label: "Martell VS" },
-        { label: "Joseph Guyot" }
+        { label: "Joseph Guy" }
       ]
     }
   ]
