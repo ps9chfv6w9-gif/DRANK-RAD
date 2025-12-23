@@ -1,118 +1,85 @@
 /********************
- * DATA
+ * DATA – volledige kaart
  ********************/
 const DATA = {
   label: "Drank",
   children: [
-    {
-      label: "Bier",
-      children: [
+    { label: "Bier", children: [
+      { label: "Tapbier", children: [
         { label: "Heineken" },
         { label: "Brand" },
+        { label: "Wisseltap" }
+      ]},
+      { label: "Flesbier", children: [
         { label: "IJwit" },
-        { label: "Zatte" }
-      ]
-    },
-    {
-      label: "Wijn",
-      children: [
-        { label: "Wit" },
-        { label: "Rood" },
-        { label: "Rosé" }
-      ]
-    },
-    {
-      label: "Mix",
-      children: [
-        { label: "Aperol Spritz" },
-        { label: "Moscow Mule" },
-        { label: "Dark ’n Stormy" }
-      ]
-    },
-    {
-      label: "Shot",
-      children: [
+        { label: "Zatte" },
+        { label: "Duvel" }
+      ]}
+    ]},
+    { label: "Wijn", children: [
+      { label: "Wit", children: [
+        { label: "Pinot Grigio" },
+        { label: "Chardonnay" }
+      ]},
+      { label: "Rood", children: [
+        { label: "Merlot" },
+        { label: "Rioja" }
+      ]}
+    ]},
+    { label: "Mix", children: [
+      { label: "Aperol Spritz" },
+      { label: "Moscow Mule" },
+      { label: "Dark ’n Stormy" }
+    ]},
+    { label: "Shot", children: [
+      { label: "Whisky", children: [
         { label: "Jack Daniel’s" },
-        { label: "Jameson" },
-        { label: "Absolut Vodka" },
-        { label: "Kraken Rum" }
-      ]
-    }
+        { label: "Jameson" }
+      ]},
+      { label: "Rum", children: [
+        { label: "Kraken" }
+      ]}
+    ]}
   ]
 };
 
 /********************
- * Audio tick
- ********************/
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-const audioCtx = AudioCtx ? new AudioCtx() : null;
-
-function tickSound(speed = 1){
-  if (!audioCtx) return;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = "square";
-  osc.frequency.value = 1400 * speed;
-  gain.gain.value = 0.04;
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.03);
-}
-
-/********************
- * Canvas setup
+ * STATE
  ********************/
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
-const resultEl = document.getElementById("result");
 const crumbEl = document.getElementById("crumb");
-const noteEl = document.getElementById("note");
-const resetBtn = document.getElementById("resetBtn");
+const homeBtn = document.getElementById("homeBtn");
+const resultBig = document.getElementById("resultBig");
 
+let currentNode = DATA;
+let path = [];
 let angle = 0;
 let spinning = false;
 
 /********************
- * Helpers
- ********************/
-function haptic(ms=20){
-  if (navigator.vibrate) navigator.vibrate(ms);
-}
-
-function rand(n){
-  return Math.floor(Math.random() * n);
-}
-
-function pickLeaf(node){
-  if (!node.children) return node;
-  return pickLeaf(node.children[rand(node.children.length)]);
-}
-
-/********************
- * Draw wheel
+ * DRAW
  ********************/
 function drawWheel(){
-  const opts = DATA.children;
+  const opts = currentNode.children || [];
   const N = opts.length;
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
+  if(!N) return;
+
   const cx = canvas.width/2;
   const cy = canvas.height/2;
-  const r = cx * 0.88;
+  const r = cx*0.88;
+  const step = Math.PI*2/N;
 
   ctx.save();
   ctx.translate(cx,cy);
   ctx.rotate(angle);
 
-  const step = Math.PI*2/N;
-
   for(let i=0;i<N;i++){
     ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.arc(0,0,r,i*step,(i+1)*step);
-    ctx.closePath();
-
     ctx.fillStyle = i%2
       ? "rgba(255,47,185,.25)"
       : "rgba(0,246,255,.22)";
@@ -124,7 +91,7 @@ function drawWheel(){
     ctx.font="900 34px system-ui";
     ctx.textAlign="right";
     ctx.shadowBlur=20;
-    ctx.shadowColor = i%2 ? "#ff2fb9" : "#00f6ff";
+    ctx.shadowColor=i%2?"#ff2fb9":"#00f6ff";
     ctx.fillText(opts[i].label, r*0.9, 10);
     ctx.restore();
   }
@@ -133,57 +100,69 @@ function drawWheel(){
 }
 
 /********************
- * Spin logic
+ * EFFECTS
  ********************/
-function spin(){
-  if (spinning) return;
-  spinning = true;
-  document.body.classList.add("spinning");
-  haptic(20);
+function showResult(text){
+  resultBig.textContent = text;
+  resultBig.classList.add("show");
 
-  const N = DATA.children.length;
-  const choice = rand(N);
-  const step = Math.PI*2/N;
+  const b = document.createElement("div");
+  b.className = "burst";
+  b.style.left = "50%";
+  b.style.top = "50%";
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(),600);
 
-  const targetAngle = (-Math.PI/2) - (choice*step + step/2);
-  const extra = Math.PI*2 * (6 + rand(3));
-  const finalAngle = targetAngle - extra;
-
-  const start = angle;
-  const duration = 1700;
-  const startTime = performance.now();
-
-  function animate(now){
-    const t = Math.min(1,(now-startTime)/duration);
-    angle = start + (finalAngle-start)*(1-Math.pow(1-t,3));
-
-    if(Math.random() < 0.15 + t*0.3){
-      tickSound(1-t*0.6);
-      haptic(5);
-    }
-
-    drawWheel();
-
-    if(t<1){
-      requestAnimationFrame(animate);
-    }else{
-      const first = DATA.children[choice];
-      const final = pickLeaf(first);
-
-      resultEl.textContent = final.label;
-      crumbEl.textContent = `Pad: ${first.label} → ${final.label}`;
-      noteEl.textContent = "Tap opnieuw voor een nieuwe ronde";
-
-      document.body.classList.remove("spinning");
-      document.body.classList.add("pulsing");
-      spinning = false;
-    }
-  }
-  requestAnimationFrame(animate);
+  setTimeout(()=>{
+    resultBig.classList.remove("show");
+  },700);
 }
 
 /********************
- * Events
+ * SPIN
+ ********************/
+function spin(){
+  if(spinning) return;
+  const opts = currentNode.children;
+  if(!opts || opts.length < 2) return;
+
+  spinning = true;
+  document.body.classList.add("spinning");
+
+  const choice = Math.floor(Math.random()*opts.length);
+  const step = Math.PI*2/opts.length;
+  const targetAngle = (-Math.PI/2)-(choice*step+step/2);
+  const finalAngle = targetAngle - Math.PI*2*(6+Math.random()*2);
+
+  const start = angle;
+  const startTime = performance.now();
+  const duration = 1600;
+
+  function anim(now){
+    const t = Math.min(1,(now-startTime)/duration);
+    angle = start + (finalAngle-start)*(1-Math.pow(1-t,3));
+    drawWheel();
+
+    if(t<1){
+      requestAnimationFrame(anim);
+    }else{
+      const chosen = opts[choice];
+      path.push(chosen);
+      currentNode = chosen;
+
+      crumbEl.textContent = path.map(p=>p.label).join(" → ");
+      showResult(chosen.label);
+
+      document.body.classList.remove("spinning");
+      spinning = false;
+      drawWheel();
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+/********************
+ * EVENTS
  ********************/
 canvas.addEventListener("click", spin);
 canvas.addEventListener("touchend", e=>{
@@ -191,16 +170,15 @@ canvas.addEventListener("touchend", e=>{
   spin();
 },{passive:false});
 
-resetBtn.addEventListener("click", ()=>{
+homeBtn.addEventListener("click", ()=>{
+  currentNode = DATA;
+  path = [];
   angle = 0;
-  resultEl.textContent = "—";
-  crumbEl.textContent = "Pad: (start)";
-  noteEl.textContent = "1 tap = 1 einddrank";
+  crumbEl.textContent = "Hoofdmenu";
   drawWheel();
 });
 
 /********************
- * Init
+ * INIT
  ********************/
-document.body.classList.add("pulsing");
 drawWheel();
