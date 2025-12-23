@@ -226,7 +226,14 @@ function drawWheel(){
   ctx.translate(cx,cy);
   ctx.rotate(angle);
 
-  const colors = ["#ff2fb9","#00f6ff","#7c3aed"];
+  const colors = [
+  "#c47a2c", // amber / whisky
+  "#f2b705", // bier
+  "#7a1f1f", // wijn rood
+  "#3f5f3a", // groen
+  "#2f3e46", // oud blauw
+  "#4a2e1f"  // warm bruin
+];
 
   for(let i=0;i<N;i++){
     ctx.beginPath();
@@ -234,18 +241,18 @@ function drawWheel(){
     ctx.arc(0,0,r,i*step,(i+1)*step);
     ctx.fillStyle = colors[i%3];
     ctx.fill();
-    ctx.strokeStyle="#000";
-    ctx.lineWidth=4;
+    ctx.strokeStyle = "rgba(0,0,0,.9)";
+    ctx.lineWidth = 3;
     ctx.stroke();
 
     ctx.save();
     ctx.rotate(i*step+step/2);
-    ctx.fillStyle="white";
+    ctx.fillStyle = "#f4efe9";
     ctx.font="900 30px system-ui";
     ctx.textAlign="right";
     ctx.shadowBlur=15;
-    ctx.shadowColor=colors[i%3];
-    ctx.fillText(opts[i].label, r*0.9, 10);
+    ctx.shadowColor = "rgba(0,0,0,.8)";
+    ctx.shadowBlur = 12;
     ctx.restore();
   }
   ctx.restore();
