@@ -422,6 +422,21 @@ function spin() {
       return;
     }
 
+// ✅ ROSE INSTANT RESULT (Wijn > Rosé)
+const isWineRoseNode =
+  rootCategoryLabel === "Wijn" &&
+  chosen.label === "Rosé" &&
+  chosen.children &&
+  chosen.children.length === 1 &&
+  (!chosen.children[0].children || chosen.children[0].children.length === 0);
+
+if (isWineRoseNode) {
+  // toon direct het enige leaf-item (meestal ook "Rosé")
+  showFinal(chosen.children[0].label);
+  cleanupSpin();
+  return;
+}
+    
     // If for some reason we end up in Mix nodes ("Shot"/"Fris") but chosen has children,
     // continue deeper normally.
     // --- NORMAL FLOW ---
