@@ -6,7 +6,7 @@
   <title>Drank Rad</title>
 
   <!-- PWA / iOS -->
-  <meta name="theme-color" content="#07040f">
+  <meta name="theme-color" content="#05010b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Drank Rad">
@@ -17,118 +17,111 @@
   <style>
     :root{
       --bg1:#05010b;
-      --bg2:#0a0220;
-      --neon1:#7c3aed; /* purple */
-      --neon2:#22d3ee; /* cyan */
-      --neon3:#fb7185; /* pink */
+      --bg2:#120024;
+      --pink:#ff2fb9;
+      --cyan:#00f6ff;
+      --purple:#7c3aed;
       --text:#f7f7ff;
-      --muted:rgba(247,247,255,.70);
-      --glass: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.10);
+      --muted:rgba(247,247,255,.65);
     }
 
     *{ box-sizing:border-box; }
+
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(124,58,237,.35), transparent 60%),
-        radial-gradient(1000px 700px at 85% 20%, rgba(34,211,238,.28), transparent 55%),
-        radial-gradient(900px 600px at 50% 85%, rgba(251,113,133,.18), transparent 60%),
-        linear-gradient(180deg, var(--bg2), var(--bg1));
       min-height:100vh;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(255,47,185,.35), transparent 60%),
+        radial-gradient(1000px 700px at 85% 20%, rgba(0,246,255,.30), transparent 55%),
+        radial-gradient(900px 600px at 50% 85%, rgba(124,58,237,.22), transparent 60%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
       padding-top: env(safe-area-inset-top);
       padding-bottom: env(safe-area-inset-bottom);
       overflow-x:hidden;
     }
 
+    /* 🌴 Miami pulse */
+    body.pulsing{
+      animation: miamiPulse 3.5s ease-in-out infinite;
+    }
+    body.spinning{
+      animation: miamiPulseFast 1.2s ease-in-out infinite;
+    }
+
+    @keyframes miamiPulse{
+      0%{ filter:hue-rotate(0deg) brightness(1); }
+      50%{ filter:hue-rotate(18deg) brightness(1.08); }
+      100%{ filter:hue-rotate(0deg) brightness(1); }
+    }
+    @keyframes miamiPulseFast{
+      0%{ filter:hue-rotate(0deg) brightness(1); }
+      50%{ filter:hue-rotate(30deg) brightness(1.15); }
+      100%{ filter:hue-rotate(0deg) brightness(1); }
+    }
+
     .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px 16px 22px;
+      max-width:980px;
+      margin:0 auto;
+      padding:18px 16px 22px;
       display:grid;
       gap:14px;
     }
 
     .top{
       display:flex;
-      align-items:flex-end;
       justify-content:space-between;
+      align-items:flex-end;
       gap:12px;
       flex-wrap:wrap;
     }
 
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .brand h1{
-      font-size:20px;
+    h1{
       margin:0;
-      letter-spacing:.2px;
+      font-size:22px;
       font-weight:900;
+      letter-spacing:.4px;
       text-shadow:
-        0 0 14px rgba(124,58,237,.35),
-        0 0 22px rgba(34,211,238,.25);
+        0 0 18px rgba(255,47,185,.35),
+        0 0 22px rgba(0,246,255,.25);
     }
+
     .crumb{
       font-size:13px;
       color:var(--muted);
-      margin:0;
     }
 
-    .actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
     .btn{
-      border:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.18);
       color:var(--text);
-      padding:10px 12px;
+      padding:10px 14px;
       border-radius:14px;
       font-weight:800;
-      letter-spacing:.2px;
       cursor:pointer;
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.05) inset,
-        0 16px 40px rgba(0,0,0,.45);
-      transition: transform .12s ease, box-shadow .12s ease;
-      user-select:none;
+      box-shadow:0 10px 30px rgba(0,0,0,.45);
     }
-    .btn:active{ transform: scale(.98); }
-    .btn:hover{
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.07) inset,
-        0 0 24px rgba(124,58,237,.18),
-        0 0 24px rgba(34,211,238,.14),
-        0 16px 40px rgba(0,0,0,.45);
-    }
+    .btn:active{ transform:scale(.97); }
 
     .grid{
       display:grid;
-      grid-template-columns: 1.25fr .75fr;
+      grid-template-columns:1.25fr .75fr;
       gap:14px;
     }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
+    @media(max-width:900px){
+      .grid{ grid-template-columns:1fr; }
     }
 
     .card{
-      border:1px solid var(--stroke);
-      border-radius:20px;
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:22px;
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       box-shadow:
         0 0 0 1px rgba(255,255,255,.06) inset,
         0 20px 70px rgba(0,0,0,.55);
-      overflow:hidden;
     }
 
     .wheelWrap{
@@ -136,49 +129,38 @@
       padding:16px;
     }
 
-    /* Pointer (wijzer) */
+    /* 🧭 Pointer */
     .pointer{
       position:absolute;
       left:50%;
-      top:10px;
-      transform: translateX(-50%);
-      width:0;
-      height:0;
+      top:8px;
+      transform:translateX(-50%);
+      width:0;height:0;
       border-left:16px solid transparent;
       border-right:16px solid transparent;
       border-top:24px solid rgba(247,247,255,.95);
-      filter: drop-shadow(0 0 10px rgba(34,211,238,.45))
-              drop-shadow(0 0 18px rgba(124,58,237,.35));
-      z-index:3;
+      filter:
+        drop-shadow(0 0 10px rgba(0,246,255,.6))
+        drop-shadow(0 0 18px rgba(255,47,185,.45));
+      z-index:5;
     }
 
     canvas{
       width:100%;
-      height:auto;
       display:block;
       border-radius:18px;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.06), transparent 60%),
-        rgba(5,1,11,.25);
+      cursor:pointer;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,.06) inset,
-        0 0 26px rgba(34,211,238,.10),
-        0 0 30px rgba(124,58,237,.10);
-      cursor:pointer; /* rad = knop */
-      touch-action: manipulation;
-      user-select:none;
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 0 28px rgba(0,246,255,.18),
+        0 0 36px rgba(255,47,185,.18);
     }
 
     .tapHint{
-      margin:10px 16px 16px;
-      color:var(--muted);
-      font-size:13px;
       text-align:center;
-      letter-spacing:.2px;
-    }
-    .tapHint b{
-      color:rgba(247,247,255,.92);
-      text-shadow: 0 0 12px rgba(34,211,238,.25);
+      font-size:13px;
+      color:var(--muted);
+      margin:10px 0 14px;
     }
 
     .side{
@@ -186,53 +168,32 @@
       display:grid;
       gap:12px;
     }
-    .label{ font-size:12px; color:var(--muted); letter-spacing:.18px; }
+
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.2px;
+    }
+
     .result{
-      font-size:28px;
+      font-size:30px;
       font-weight:950;
       margin:0;
       line-height:1.15;
       text-shadow:
-        0 0 16px rgba(34,211,238,.22),
-        0 0 18px rgba(124,58,237,.18);
-      white-space:pre-line;
+        0 0 18px rgba(0,246,255,.35),
+        0 0 22px rgba(255,47,185,.35);
+      animation: pop .35s ease;
     }
-    .sub{
+
+    @keyframes pop{
+      from{ transform:scale(.85); opacity:.6; }
+      to{ transform:scale(1); opacity:1; }
+    }
+
+    .note{
       font-size:13px;
       color:var(--muted);
-      margin:0;
-    }
-
-    .list{
-      margin:0;
-      padding:0;
-      list-style:none;
-      display:grid;
-      gap:8px;
-    }
-    .chip{
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      box-shadow: 0 0 18px rgba(34,211,238,.08);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-    }
-    .chip span:last-child{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size:12px;
-      color:rgba(247,247,255,.55);
-    }
-
-    .shake{
-      animation: pop .28s ease;
-    }
-    @keyframes pop{
-      0%{ transform: scale(.94); opacity:.65; }
-      100%{ transform: scale(1); opacity:1; }
     }
   </style>
 </head>
@@ -240,46 +201,32 @@
 <body>
   <div class="wrap">
     <div class="top">
-      <div class="brand">
+      <div>
         <h1>DRANK RAD</h1>
-        <p class="crumb" id="crumb">Pad: (start)</p>
+        <div class="crumb" id="crumb">Pad: (start)</div>
       </div>
-
-      <div class="actions">
-        <button class="btn" id="resetBtn">Reset</button>
-      </div>
+      <button class="btn" id="resetBtn">Reset</button>
     </div>
 
     <div class="grid">
       <div class="card">
         <div class="wheelWrap">
-          <div class="pointer" aria-hidden="true"></div>
-          <canvas id="wheel" width="900" height="900" aria-label="Tap to spin"></canvas>
+          <div class="pointer"></div>
+          <canvas id="wheel" width="900" height="900"></canvas>
         </div>
-        <div class="tapHint"><b>Tap</b> het rad om te spinnen • de <b>wijzer</b> bepaalt de uitkomst</div>
+        <div class="tapHint">🌴 Tap het <b>rad</b> • de <b>wijzer</b> kiest</div>
       </div>
 
       <div class="card side">
         <div>
           <div class="label">Eindresultaat</div>
           <p class="result" id="result">—</p>
-          <p class="sub" id="note">1 tap = 1 einddrank</p>
-        </div>
-
-        <div>
-          <div class="label">Items in dit rad</div>
-          <ul class="list" id="items"></ul>
+          <div class="note" id="note">1 tap = 1 einddrank</div>
         </div>
       </div>
     </div>
   </div>
 
   <script src="app.js"></script>
-  <script>
-    // Offline caching (optioneel)
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js");
-    }
-  </script>
 </body>
 </html>
