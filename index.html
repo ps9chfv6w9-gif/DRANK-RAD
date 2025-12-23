@@ -25,6 +25,7 @@ body{
   color:#f4efe9;
   min-height:100vh;
   overflow:hidden;
+  animation: warmPulse 6s ease-in-out infinite;
 }
 
 .wrap{
@@ -109,6 +110,14 @@ canvas{
 @keyframes float{
   50%{ transform:translateY(-14px); }
 }
+
+/* 🔥 Warm kroeg-licht effect */
+@keyframes warmPulse {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.05); }
+  100% { filter: brightness(1); }
+}
+ 
 </style>
 </head>
 
