@@ -1,1 +1,86 @@
-<!-- index.html from ChatGPT response -->
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>Drank Rad</title>
+
+  <!-- PWA / iOS -->
+  <meta name="theme-color" content="#0b0b10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Drank Rad">
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <style>
+    body {
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      background:#0b0b10;
+      color:white;
+    }
+    .wrap {
+      max-width:900px;
+      margin:auto;
+      padding:16px;
+    }
+    .top {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    button {
+      background:#1f1f35;
+      color:white;
+      border:none;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:700;
+    }
+    canvas {
+      width:100%;
+      background:#121222;
+      border-radius:16px;
+    }
+    ul {
+      list-style:none;
+      padding:0;
+    }
+    li {
+      background:#1f1f35;
+      margin-bottom:6px;
+      padding:8px 12px;
+      border-radius:10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <div>
+      <strong>Drank Rad</strong><br>
+      <small id="crumb">Start</small>
+    </div>
+    <button id="spinBtn">Spin</button>
+  </div>
+
+  <canvas id="wheel" width="600" height="600"></canvas>
+
+  <h3 id="result">—</h3>
+  <ul id="items"></ul>
+</div>
+
+<script src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
