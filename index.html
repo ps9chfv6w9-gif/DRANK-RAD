@@ -147,21 +147,29 @@
     }
 
     .resultBig{
-      font-size:48px;
-      font-weight:950;
-      text-align:center;
-      opacity:0;
-      transform:scale(.7);
-      text-shadow:
-        0 0 25px var(--cyan),
-        0 0 35px var(--pink);
-      transition: all .35s ease;
-    }
+  font-size:52px;
+  font-weight:950;
+  text-align:center;
+  opacity:0;
+  transform:translateY(10px);
+  text-shadow:
+    0 0 20px rgba(0,246,255,.7),
+    0 0 35px rgba(255,47,185,.6),
+    0 12px 25px rgba(0,0,0,.55);
+  transition: opacity .4s ease, transform .4s ease;
+  animation: floatText 3.5s ease-in-out infinite;
+}
 
-    .resultBig.show{
-      opacity:1;
-      transform:scale(1);
-    }
+.resultBig.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+@keyframes floatText{
+  0%{ transform:translateY(0); }
+  50%{ transform:translateY(-14px); }
+  100%{ transform:translateY(0); }
+}
 
     /* 🌟 NEON BURST */
     .burst{
