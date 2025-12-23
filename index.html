@@ -18,9 +18,11 @@
 
 body{
   margin:0;
-  background: radial-gradient(circle at top, #120024, var(--bg));
+  background:
+    radial-gradient(circle at top, #3a261a, #1a0f0a 60%),
+    linear-gradient(180deg, #2b1b12, #120a06);
   font-family: system-ui, -apple-system;
-  color:white;
+  color:#f4efe9;
   min-height:100vh;
   overflow:hidden;
 }
@@ -98,9 +100,9 @@ canvas{
   font-weight:900;
   cursor:pointer;
   text-shadow:
-    0 0 25px var(--cyan),
-    0 0 40px var(--pink),
-    0 15px 30px rgba(0,0,0,.7);
+  0 0 8px rgba(196,122,44,.8),
+  0 0 18px rgba(196,122,44,.6),
+  0 12px 25px rgba(0,0,0,.8);
   animation:float 3s ease-in-out infinite;
 }
 
