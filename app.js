@@ -2,26 +2,169 @@
  * DATA – gebruik jouw volledige kaart
  ***********************/
 const DATA = {
-  label:"Drank",
-  children:[
+  label: "Drank",
+  children: [
+
+    /* 🍺 BIER */
     {
-      label:"Bier",
-      children:[
-        {label:"Tapbier", children:[{label:"Heineken"},{label:"Brand"}]},
-        {label:"Flesbier", children:[{label:"Zatte"},{label:"Duvel"}]}
-      ]
-    },
-    {
-      label:"Mix",
-      children:[
+      label: "Bier",
+      children: [
         {
-          label:"Shot",
-          children:[{label:"Jameson"},{label:"Vodka"}]
+          label: "Tapbier",
+          children: [
+            { label: "Heineken" },
+            { label: "Brand" },
+            { label: "Eeuwige Jeugd Lellebel" },
+            { label: "Texels Skuumkoppe" },
+            { label: "Oedipus Gaia" },
+            { label: "Wisseltap" },
+            { label: "Heineken 0.0" }
+          ]
         },
         {
-          label:"Fris",
-          children:[{label:"Cola"},{label:"Tonic"}]
+          label: "Flesbier",
+          children: [
+            { label: "IJwit" },
+            { label: "Zatte" },
+            { label: "Mannenliefde" },
+            { label: "Polyamorie" },
+            { label: "Westmalle Dubbel" },
+            { label: "Westmalle Tripel" },
+            { label: "Duvel" },
+            { label: "La Chouffe" },
+            { label: "Erdinger" },
+            { label: "Mort Subite Kriek" },
+            { label: "Corona" }
+          ]
+        },
+        {
+          label: "Alcoholvrij",
+          children: [
+            { label: "Vrijwit 0,5%" },
+            { label: "Lowlander Wit 0,0%" },
+            { label: "Affligem Blond 0,0%" },
+            { label: "Brand IPA 0,0%" },
+            { label: "Amstel Radler" },
+            { label: "Apple Bandit Cider" }
+          ]
         }
+      ]
+    },
+
+    /* 🍷 WIJN */
+    {
+      label: "Wijn",
+      children: [
+        {
+          label: "Wit",
+          children: [
+            { label: "Pinot Grigio" },
+            { label: "Chardonnay" },
+            { label: "Sauvignon Blanc" },
+            { label: "Grüner Veltliner" }
+          ]
+        },
+        {
+          label: "Rood",
+          children: [
+            { label: "Merlot" },
+            { label: "Rioja" },
+            { label: "Pinot Noir (gekoeld)" }
+          ]
+        },
+        {
+          label: "Rosé",
+          children: [
+            { label: "Rosé" }
+          ]
+        },
+        {
+          label: "Speciaal",
+          children: [
+            { label: "Prosecco 0,20L" },
+            { label: "Ruby Port" }
+          ]
+        }
+      ]
+    },
+
+    /* 🍹 MIX = SHOT → FRIS */
+    {
+      label: "Mix",
+      children: [
+        {
+          label: "Shot",
+          children: [
+            { label: "Jack Daniel’s" },
+            { label: "Jameson" },
+            { label: "Bushmills" },
+            { label: "Glenfiddich 12" },
+            { label: "Oban 14" },
+            { label: "Bacardi" },
+            { label: "Havana Club 3" },
+            { label: "Kraken Rum" },
+            { label: "Beefeater Gin" },
+            { label: "Bobby’s Gin" },
+            { label: "Tanqueray" },
+            { label: "Bombay Sapphire" },
+            { label: "Absolut Vodka" },
+            { label: "Disaronno" },
+            { label: "Baileys" },
+            { label: "Drambuie" },
+            { label: "Sambuca" },
+            { label: "Pikketanussie" },
+            { label: "Olmeca Silver" },
+            { label: "Nuestra Soledad Mezcal" },
+            { label: "Martell VS" },
+            { label: "Joseph Guyot" }
+          ]
+        },
+        {
+          label: "Fris",
+          children: [
+            { label: "Tonic" },
+            { label: "Spa Rood" },
+            { label: "Spa Blauw" },
+            { label: "Sisi" },
+            { label: "7UP" },
+            { label: "Cola" },
+            { label: "Cola Zero" },
+            { label: "Ginger Beer" },
+            { label: "Appelsap" },
+            { label: "Cranberry Appelsap" },
+            { label: "Perensap" },
+            { label: "Sinaasappelsap" }
+          ]
+        }
+      ]
+    },
+
+    /* 🥃 SHOT (PUUR) */
+    {
+      label: "Shot",
+      children: [
+        { label: "Jack Daniel’s" },
+        { label: "Jameson" },
+        { label: "Bushmills" },
+        { label: "Glenfiddich 12" },
+        { label: "Oban 14" },
+        { label: "Bacardi" },
+        { label: "Havana Club 3" },
+        { label: "Kraken Rum" },
+        { label: "Beefeater Gin" },
+        { label: "Bobby’s Gin" },
+        { label: "Tanqueray" },
+        { label: "Bombay Sapphire" },
+        { label: "Absolut Vodka" },
+        { label: "Disaronno" },
+        { label: "Baileys" },
+        { label: "Drambuie" },
+        { label: "Sambuca" },
+        { label: "Pikketanussie" },
+        { label: "Olmeca Silver" },
+        { label: "Nuestra Soledad Mezcal" },
+        { label: "Martell VS" },
+        { label: "Joseph Guyot" }
       ]
     }
   ]
