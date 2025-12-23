@@ -70,9 +70,18 @@ body.spinning::before{
 }
 
 .wrap{
-  max-width:900px;
-  margin:auto;
-  padding:16px;
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  /* safe area support (iPhone 15 etc.) */
+  padding:
+    env(safe-area-inset-top)
+    env(safe-area-inset-right)
+    env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
 }
 
 .pointer{
